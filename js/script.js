@@ -278,3 +278,4 @@ cityInput.addEventListener(
   "keyup",
   (e) => e.key === "Enter" && getCityCoordinates()
 );
+window.addEventListener("load", getUserCoordinates);

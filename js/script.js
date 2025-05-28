@@ -1,5 +1,6 @@
 let cityInput = document.getElementById("city-input"),
   searchBtn = document.getElementById("searchBtn"),
+  locationBtn = document.getElementById("locationBtn"),
   api_key = "35f0f3453b468b5ba4c4a2ac52ab2b58";
 currentWeatherCard = document.querySelectorAll(".weather-left .card")[0];
 fiveDaysForecastCard = document.querySelector(".day-forecast");
@@ -16,7 +17,7 @@ sunriseCard = document.querySelectorAll(".highlights .card")[1];
 function getWeatherDetails(name, lat, lon, country, state) {
   let FORECAST_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${api_key}`,
     WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`,
-    AIR_POLLUTION_API_URL = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${api_key}`,
+    AIR_POLLUTION_API_URL = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${api_key}`,
     days = [
       "Sunday",
       "Monday",
@@ -177,23 +178,27 @@ function getWeatherDetails(name, lat, lon, country, state) {
   fetch(FORECAST_API_URL)
     .then((res) => res.json())
     .then((data) => {
-        let hourlyForecast = data.list;
-        hourlyForecastCard.innerHTML = '';
-        for (i = 0; i <= 7; i++){
-            let hrForecastDate = new Date(hourlyForecast[i].dt_txt);
-            let hr = hrForecastDate.getHours();
-            let a = 'PM';
-            if(hr < 12) a = 'AM';
-            if(hr == 0) hr = 12;
-            if(hr > 12) hr = hr - 12;
-            hourlyForecastCard.innerHTML += `
+      let hourlyForecast = data.list;
+      hourlyForecastCard.innerHTML = "";
+      for (i = 0; i <= 7; i++) {
+        let hrForecastDate = new Date(hourlyForecast[i].dt_txt);
+        let hr = hrForecastDate.getHours();
+        let a = "PM";
+        if (hr < 12) a = "AM";
+        if (hr == 0) hr = 12;
+        if (hr > 12) hr = hr - 12;
+        hourlyForecastCard.innerHTML += `
                 <div class="card">
                     <p>${hr} ${a}</p>
-                    <img src="https://openweathermap.org/img/wn/${hourlyForecast[i].weather[0].icon}.png" alt="" />
-                    <p>${(hourlyForecast[i].main.temp - 273.15).toFixed(2)}&deg;C</p>
+                    <img src="https://openweathermap.org/img/wn/${
+                      hourlyForecast[i].weather[0].icon
+                    }.png" alt="" />
+                    <p>${(hourlyForecast[i].main.temp - 273.15).toFixed(
+                      2
+                    )}&deg;C</p>
                 </div>
             `;
-        }
+      }
       let uniqueForecastDays = [];
       let fiveDaysForecast = data.list.filter((forecast) => {
         let forecastDate = new Date(forecast.dt_txt).getDate();
@@ -229,7 +234,7 @@ function getCityCoordinates() {
   let cityName = cityInput.value.trim();
   cityInput.value = "";
   if (!cityName) return;
-  let GEOCODING_API_URL = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${api_key}`;
+  let GEOCODING_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${api_key}`;
   fetch(GEOCODING_API_URL)
     .then((res) => res.json())
     .then((data) => {
@@ -241,4 +246,24 @@ function getCityCoordinates() {
     });
 }
 
+function getUserCoordinates() {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      let { latitude, longitude } = position.coords;
+      let REVERSE_GEOCODING_URL = `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${api_key}`;
+
+      fetch(REVERSE_GEOCODING_URL)
+        .then((res) => res.json())
+        .then((data) => {
+          let { name, country, state } = data[0];
+          getWeatherDetails(name, latitude, longitude, country, state);
+        })
+        .catch(() => {
+          alert("Failed to fetch user coordinates");
+        });
+    }
+  );
+}
+
 searchBtn.addEventListener("click", getCityCoordinates);
+locationBtn.addEventListener("click", getUserCoordinates);

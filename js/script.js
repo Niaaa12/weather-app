@@ -2,6 +2,7 @@ let cityInput = document.getElementById("city-input"),
   searchBtn = document.getElementById("searchBtn"),
   api_key = "35f0f3453b468b5ba4c4a2ac52ab2b58";
 currentWeatherCard = document.querySelectorAll(".weather-left .card")[0];
+fiveDaysForecastCard = document.querySelector(".day-forecast");
 
 function getWeatherDetails(name, lat, lon, country, state) {
   let FORECAST_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${api_key}`,
@@ -67,6 +68,39 @@ function getWeatherDetails(name, lat, lon, country, state) {
     })
     .catch(() => {
       alert("Failed to fetch current weather");
+    });
+
+  fetch(FORECAST_API_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      let uniqueForecastDays = [];
+      let fiveDaysForecast = data.list.filter((forecast) => {
+        let forecastDate = new Date(forecast.dt_txt).getDate();
+        if (!uniqueForecastDays.includes(forecastDate)) {
+          return uniqueForecastDays.push(forecastDate);
+        }
+      });
+      fiveDaysForecastCard.innerHTML = "";
+      for (i = 1; i < fiveDaysForecast.length; i++) {
+        let date = new Date(fiveDaysForecast[i].dt_txt);
+        fiveDaysForecastCard.innerHTML += `
+                <div class="forecast-item">
+                    <div class="icon-wrapper">
+                    <img src="https://openweathermap.org/img/wn/${
+                      fiveDaysForecast[i].weather[0].icon
+                    }.png" alt="" />
+                    <span>${(fiveDaysForecast[i].main.temp - 273.15).toFixed(
+                      2
+                    )}&deg;C</span>
+                    </div>
+                    <p>${date.getDate()} ${months[date.getMonth()]}</p>
+                    <p>${days[date.getDay()]}</p>
+                </div>
+            `;
+      }
+    })
+    .catch(() => {
+      alert("Failed to fetch weather forecast");
     });
 }
 

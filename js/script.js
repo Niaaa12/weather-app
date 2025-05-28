@@ -5,7 +5,12 @@ currentWeatherCard = document.querySelectorAll(".weather-left .card")[0];
 fiveDaysForecastCard = document.querySelector(".day-forecast");
 aqiCard = document.querySelectorAll(".highlights .card")[0];
 sunriseCard = document.querySelectorAll(".highlights .card")[1];
-aqiList = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+(humidityVal = document.getElementById("humidityVal")),
+  (pressureVal = document.getElementById("pressureVal")),
+  (visibilityVal = document.getElementById("visibilityVal")),
+  (windSpeedVal = document.getElementById("windSpeedVal")),
+  (feelsVal = document.getElementById("feelsVal")),
+  (aqiList = ["Good", "Fair", "Moderate", "Poor", "Very Poor"]);
 
 function getWeatherDetails(name, lat, lon, country, state) {
   let FORECAST_API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${api_key}`,
@@ -122,7 +127,9 @@ function getWeatherDetails(name, lat, lon, country, state) {
             </div>
       `;
       let { sunrise, sunset } = data.sys,
-        { timezone } = data,
+        { timezone, visibility } = data,
+        { humidity, pressure, feels_like } = data.main,
+        { speed } = data.wind,
         sRiseTime = moment
           .utc(sunrise, "X")
           .add(timezone, "seconds")
@@ -156,6 +163,11 @@ function getWeatherDetails(name, lat, lon, country, state) {
                 </div>
             </div>
       `;
+      humidityVal.innerHTML = `${humidity}%`;
+      pressureVal.innerHTML = `${pressure}hPa`;
+      visibilityVal.innerHTML = `${visibility / 1000}km`;
+      windSpeedVal.innerHTML = `${speed}m/s`;
+      feelsVal.innerHTML = `${(feels_like - 273.15).toFixed(2)}&deg;C`;
     })
     .catch(() => {
       alert("Failed to fetch current weather");

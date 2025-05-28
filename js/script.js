@@ -261,6 +261,13 @@ function getUserCoordinates() {
         .catch(() => {
           alert("Failed to fetch user coordinates");
         });
+    },
+    (error) => {
+      if (error.code === error.PERMISSION_DENIED) {
+        alert(
+          "Geolocation permission denied. Please reset location permission to grant acces again"
+        );
+      }
     }
   );
 }

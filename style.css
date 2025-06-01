@@ -308,6 +308,20 @@ hr {
   text-align: center;
 }
 
+.img-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #072b4b;
+}
+
 .modal-body p {
   margin: 8px 0;
   font-size: 0.95rem;

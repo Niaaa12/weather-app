@@ -266,6 +266,52 @@
         </div>
       </div>
     </div>
+
+    <div class="card-profil">
+      <div class="card-header">
+        <p class="card-text">About the Developer</p>
+        <a href="#" id="openModalBtn" class="btn">See Detail</a>
+      </div>
+      <div class="footer">&copy; 2025 Weather App.</div>
+    </div>
+
+    <div id="profileModal" class="custom-modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+        <h2 class="modal-title">About the Developer</h2>
+      <div class="modal-body">
+        <p><strong>Nama:</strong> Kurnia Ningsih</p>
+        <p><strong>Program Studi:</strong> Sistem Informasi</p>
+        <p><strong>Email:</strong> krnsh1203@gmail.com</p>
+        <p><strong>Universitas:</strong> Universitas Islam Negeri Imam Bonjol Padang</p>
+        <p>
+          <strong>GitHub:</strong>
+          <a href="https://github.com/Niaaa12" target="_blank">github.com/Niaaa12</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      openModalBtn = document.getElementById("openModalBtn");
+      closeModalBtn = document.getElementById("closeModalBtn");
+      profileModal = document.getElementById("profileModal");
+
+      openModalBtn.addEventListener("click", () => {
+        profileModal.style.display = "flex";
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        profileModal.style.display = "none";
+      });
+
+      // Klik di luar modal untuk menutup
+      window.addEventListener("click", (e) => {
+        if (e.target === profileModal) {
+          profileModal.style.display = "none";
+        }
+      });
+    </script>
+
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="js/script.js"></script>
   </body>
